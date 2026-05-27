@@ -2,8 +2,7 @@ name: Monitor Proposições PI
 
 on:
   schedule:
-    - cron: '10 11 * * *'   # 08:10 BRT
-    - cron: '10 19 * * *'   # 16:10 BRT
+    - cron: '48 9 * * *'   # 06:48 BRT
   workflow_dispatch:
 
 jobs:
