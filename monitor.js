@@ -6,6 +6,10 @@ const EMAIL_REMETENTE = process.env.EMAIL_REMETENTE;
 const EMAIL_SENHA = process.env.EMAIL_SENHA;
 const ARQUIVO_ESTADO = 'estado.json';
 const API_BASE = 'https://sapl.al.pi.leg.br/api';
+const HEADERS = {
+  Accept: 'application/json',
+  'User-Agent': 'Mozilla/5.0 (compatible; MonitorLegislativo/1.0; +https://monitorlegislativo.com.br)',
+};
 
 function carregarEstado() {
   if (fs.existsSync(ARQUIVO_ESTADO)) {
@@ -89,13 +93,10 @@ async function buscarProposicoes() {
     const url = `${API_BASE}/materia/materialegislativa/?ano=${ano}&page=${pagina}&page_size=${pageSize}&ordering=-id`;
     console.log(`📄 Página ${pagina}: ${url}`);
 
-    const response = await fetch(url, {
-      headers: { 'Accept': 'application/json' }
-    });
+    const response = await fetch(url, { headers: HEADERS });
 
     if (!response.ok) {
-      console.error(`❌ Erro na API: ${response.status} ${response.statusText}`);
-      break;
+      throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
     }
 
     const json = await response.json();
@@ -150,8 +151,7 @@ function normalizarProposicao(p) {
   const proposicoesRaw = await buscarProposicoes();
 
   if (proposicoesRaw.length === 0) {
-    console.log('⚠️ Nenhuma proposição encontrada. Encerrando sem alterar estado.');
-    process.exit(0);
+    throw new Error('Nenhuma proposição encontrada. Falha provável de coleta/API; workflow deve ficar vermelho.');
   }
 
   const proposicoes = proposicoesRaw.map(normalizarProposicao).filter(p => p.id);
