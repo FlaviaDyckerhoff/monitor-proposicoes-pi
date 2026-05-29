@@ -5,6 +5,10 @@ on:
     - cron: '48 9 * * *'   # 06:48 BRT
   workflow_dispatch:
 
+concurrency:
+  group: monitor-proposicoes-pi
+  cancel-in-progress: false
+
 jobs:
   monitorar:
     runs-on: [self-hosted, pi]
@@ -41,4 +45,5 @@ jobs:
           fi
           git add estado.json
           git diff --staged --quiet || git commit -m "chore: atualiza estado [skip ci]"
+          git pull --rebase
           git push
