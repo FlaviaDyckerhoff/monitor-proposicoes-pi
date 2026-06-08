@@ -165,7 +165,7 @@ function normalizarProposicao(p) {
     ano: p.ano || '-',
     link: `${MATERIA_BASE}/${p.id}`,
     data: p.data_apresentacao || '-',
-    ementa: (p.ementa || '-').substring(0, 200),
+    ementa: String(p.ementa || '-').replace(/\s+/g, ' ').trim() || '-',
   };
 }
 
