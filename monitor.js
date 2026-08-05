@@ -663,6 +663,7 @@ function normalizarProposicao(p) {
       return (parseInt(b.numero) || 0) - (parseInt(a.numero) || 0);
     });
     await enviarEmail(novas);
+    await sincronizarRadar03(novas);
     novas.forEach(p => idsVistos.add(p.id));
     estado.proposicoes_vistas = Array.from(idsVistos);
   } else {
